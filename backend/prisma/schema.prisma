@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  roll_number String @unique @id
+  name String
+  email String @unique
+  password String
+}
+
+model Product {
+  productId    Int     @id @default(autoincrement())
+  title        String
+  description  String
+  images       Json 
+  price        Float
+  seller       String
+  category     String
+  contact      String
+  buyer        String
+  status       String
+  createdAt    DateTime @default(now())
+  wishlists    Wishlist[]
+  orders       Order[]
+}
+
+model Wishlist {
+  wishlistId   Int      @id @default(autoincrement())
+  roll_number  String      
+  productId    Int      
+  product      Product  @relation(fields: [productId], references: [productId])
+  createdAt    DateTime @default(now())
+  @@unique([roll_number, productId])
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [productId])
+  buyer       String   
+  seller      String   
+  createdAt   DateTime @default(now())
+}
+
+model ChatMessage {
+  id          Int      @id @default(autoincrement())
+  sender      String   
+  receiver    String   
+  message     String
+  createdAt   DateTime @default(now())
+}
